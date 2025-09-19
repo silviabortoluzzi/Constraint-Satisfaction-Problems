@@ -2,7 +2,7 @@
 # The CSP.ac_3() and CSP.backtrack() methods need to be implemented
 
 from csp import CSP, alldiff
-
+import time
 
 def print_solution(solution):
     """
@@ -20,7 +20,7 @@ def print_solution(solution):
 
 
 # Choose Sudoku problem
-grid = open('sudoku_easy.txt').read().split()
+grid = open('sudoku_very_hard.txt').read().split()
 
 width = 9
 box_width = 3
@@ -54,11 +54,36 @@ csp = CSP(
     edges=edges,
 )
 
-print(csp.ac_3())
+import time
+
+# Measure total runtime (AC-3 + backtracking)
+start_total = time.time()
+ac3_result = csp.ac_3()
+end_ac3 = time.time()
+
+print("AC-3 result:", ac3_result)
 print("Domains after AC-3:")
 for var, dom in csp.domains.items():
     print(var, dom)
-print_solution(csp.backtracking_search())
+
+# Measure runtime of backtracking only
+start_bt = time.time()
+solution = csp.backtracking_search()
+end_bt = time.time()
+
+# Print stats
+print("\nBacktrack calls:", csp.backtrack_calls)
+print("Backtrack failures:", csp.backtrack_failures)
+print("Backtracking runtime:", end_bt - start_bt, "seconds")
+print("Total runtime (AC-3 + Backtracking):", end_bt - start_total, "seconds")
+
+# Print solution if it exists
+if solution:
+    print("\nSolved Sudoku:")
+    print_solution(solution)
+else:
+    print("\nNo solution found.")
+
 
 # Expected output after implementing csp.ac_3() and csp.backtracking_search():
 # True
